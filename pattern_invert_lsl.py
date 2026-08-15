@@ -37,7 +37,7 @@ CROSS_THICKNESS_NORM = 0.006
 # PsychoPy rgb color space is -1 (black) to +1 (white)
 WHITE = (1, 1, 1)
 BLACK = (-1, -1, -1)
-RED = (0.77, 0.24, 0.24)  # ~#c43c3c
+RED = (1.0, -1.0, -1.0)  # pure intense red
 
 
 def parse_args():
@@ -88,7 +88,7 @@ def run():
         size=(1200, 800),
         units="height",
         fullscr=args.fullscreen,
-        color=(0.06, 0.06, 0.07),
+        color=BLACK,
         allowGUI=not args.fullscreen,
     )
 
@@ -163,7 +163,7 @@ def run():
             break
 
     # Black screen (like original turnOffDisplay)
-    win.color = (0, 0, 0)
+    win.color = BLACK
     win.flip()
     outlet.push_sample(["end"], pylsl.local_clock())
     core.wait(0.5)
