@@ -29,7 +29,7 @@ import numpy as np
 
 # Defaults (match original app)
 DEFAULT_GRID = 16
-DEFAULT_INTERVAL = 1.0
+DEFAULT_INTERVAL = 0.5
 DEFAULT_FLICKERS = 180
 BOARD_SIZE_NORM = 0.85  # board as fraction of window height
 CROSS_SQUARES = 1
