@@ -32,10 +32,11 @@ DEFAULT_GRID = 16
 DEFAULT_INTERVAL = 1.0
 DEFAULT_FLICKERS = 180
 BOARD_SIZE_NORM = 0.85  # board as fraction of window height
-CROSS_SQUARES = 2
-CROSS_THICKNESS_NORM = 0.008
+CROSS_SQUARES = 1
+CROSS_THICKNESS_NORM = 0.006
+# PsychoPy rgb color space is -1 (black) to +1 (white)
 WHITE = (1, 1, 1)
-BLACK = (0.1, 0.1, 0.1)
+BLACK = (-1, -1, -1)
 RED = (0.77, 0.24, 0.24)  # ~#c43c3c
 
 
@@ -102,11 +103,13 @@ def run():
             xys.append([x, y])
     xys = np.array(xys, dtype=np.float32)
     n_elements = grid * grid
-    sizes = np.tile([cell_size * 0.98], (n_elements, 2))
+    sizes = np.tile([cell_size], (n_elements, 2))
 
     colors_a = build_checker_colors(grid, invert=False)
     colors_b = build_checker_colors(grid, invert=True)
 
+    # Solid squares: default tex/mask are a sine grating + gaussian, which
+    # look like gradients. None/None + no interpolation gives hard edges.
     checker = ElementArrayStim(
         win,
         nElements=n_elements,
@@ -114,10 +117,13 @@ def run():
         sizes=sizes,
         colors=colors_a,
         colorSpace="rgb",
+        elementTex=None,
         elementMask=None,
+        interpolate=False,
+        sfs=0,
     )
 
-    # Red cross in center (2 squares each arm)
+    # Red cross in center (1 square each arm)
     cross_w = CROSS_SQUARES * cell_size
     cross_h = CROSS_THICKNESS_NORM
     cross_horiz = visual.Rect(
