@@ -31,7 +31,6 @@ import numpy as np
 DEFAULT_GRID = 16
 DEFAULT_INTERVAL = 0.5
 DEFAULT_FLICKERS = 180
-BOARD_SIZE_NORM = 0.85  # board as fraction of window height
 CROSS_SQUARES = 1
 CROSS_THICKNESS_NORM = 0.006
 # PsychoPy rgb color space is -1 (black) to +1 (white)
@@ -92,18 +91,21 @@ def run():
         allowGUI=not args.fullscreen,
     )
 
-    # Board: grid of squares in height units
-    cell_size = (BOARD_SIZE_NORM / grid)
+    # Fill the window: cells may be rectangular so the board covers width and height.
+    # In height units, the window is 1.0 tall and `aspect` wide.
+    aspect = float(win.size[0]) / float(win.size[1])
+    cell_w = aspect / grid
+    cell_h = 1.0 / grid
     half = (grid - 1) / 2.0
     xys = []
     for i in range(grid):
         for j in range(grid):
-            x = (j - half) * cell_size
-            y = (half - i) * cell_size
+            x = (j - half) * cell_w
+            y = (half - i) * cell_h
             xys.append([x, y])
     xys = np.array(xys, dtype=np.float32)
     n_elements = grid * grid
-    sizes = np.tile([cell_size], (n_elements, 2))
+    sizes = np.tile([cell_w, cell_h], (n_elements, 1))
 
     colors_a = build_checker_colors(grid, invert=False)
     colors_b = build_checker_colors(grid, invert=True)
@@ -123,15 +125,13 @@ def run():
         sfs=0,
     )
 
-    # Red cross in center (1 square each arm)
-    cross_w = CROSS_SQUARES * cell_size
-    cross_h = CROSS_THICKNESS_NORM
+    # Red cross in center (1 cell each arm)
     cross_horiz = visual.Rect(
-        win, width=cross_w, height=cross_h,
+        win, width=CROSS_SQUARES * cell_w, height=CROSS_THICKNESS_NORM,
         fillColor=RED, lineColor=None, units="height"
     )
     cross_vert = visual.Rect(
-        win, width=cross_h, height=cross_w,
+        win, width=CROSS_THICKNESS_NORM, height=CROSS_SQUARES * cell_h,
         fillColor=RED, lineColor=None, units="height"
     )
 
